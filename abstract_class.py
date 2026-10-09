@@ -1,34 +1,45 @@
 # Abstract Class
+# Shares state and behaviour with its subclasses ("is a" relationship).
+
 from abc import ABC, abstractmethod
 
-# Abstract class
+
 class Plane(ABC):
+    def __init__(self, name: str):
+        self.name = name  # shared state
+
+    # shared, concrete behaviour (a template method)
+    def flight(self):
+        self.take_off()
+        print(f"{self.name} flying")
+        self.land()
+
+    # steps that every subclass must implement
     @abstractmethod
-    def take_off(self):
-        pass
+    def take_off(self): ...
 
     @abstractmethod
-    def fly(self):
-        pass
+    def land(self): ...
 
-    @abstractmethod
-    def land(self):
-        pass
 
-# Concrete class inheriting from the abstract class
 class PassengerPlane(Plane):
     def take_off(self):
-        print("Passenger Plane taking off")
-
-    def fly(self):
-        print("Passenger Plane flying")
+        print(f"{self.name} taking off from the runway")
 
     def land(self):
-        print("Passenger Plane landing")
+        print(f"{self.name} landing on the runway")
+
+
+class Seaplane(Plane):
+    def take_off(self):
+        print(f"{self.name} taking off from the water")
+
+    def land(self):
+        print(f"{self.name} landing on the water")
+
 
 # Usage
 def demo():
-    passenger_plane = PassengerPlane()
-    passenger_plane.take_off()
-    passenger_plane.fly()
-    passenger_plane.land()
+    # Plane("x")  # TypeError: can't instantiate an abstract class
+    for plane in (PassengerPlane("Passenger Plane"), Seaplane("Seaplane")):
+        plane.flight()
