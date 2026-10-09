@@ -1,7 +1,8 @@
-# Facoty Pattern
+# Factory Pattern
+
 
 class House:
-    def __init__(self, size, color):
+    def __init__(self, size: str, color: str):
         self.size = size
         self.color = color
 
@@ -10,61 +11,55 @@ class House:
 
 
 class Treehouse(House):
-    def __init__(self, size, color, tree_type):
+    def __init__(self, size: str, color: str, tree_type: str):
         super().__init__(size, color)
         self.tree_type = tree_type
 
     def print(self):
-        print(f"This {self.size} {self.color} treehouse on a {self.tree_type} tree is so cool!")
+        print(f"This {self.size} {self.color} treehouse in the {self.tree_type} tree is so cool!")
 
 
 class Skyscraper:
-    def __init__(self, height, material):
+    def __init__(self, height: int, material: str):
         self.height = height
         self.material = material
 
     def print(self):
-        print(f"This {self.height}-meter tall skyscraper made of {self.material}.")
+        print(f"This {self.height}-meter tall skyscraper is made of {self.material}.")
 
 
 class HouseFactory:
-    def createSmallHouse(self, color):
-        size = "small"
-        return House(size, color)
+    """Hides which class is created and with which arguments."""
 
-    def createMediumHouse(self, color):
-        size = "medium"
-        return House(size, color)
+    def create_small_house(self, color: str) -> House:
+        return House("small", color)
 
-    def createLargeHouse(self, color):
-        size = "large"
-        return House(size, color)
+    def create_medium_house(self, color: str) -> House:
+        return House("medium", color)
 
-    def createOakTreehouse(self, color):
-        size = "small"
-        tree_type = "oak"
-        return Treehouse(size, color, tree_type)
+    def create_large_house(self, color: str) -> House:
+        return House("large", color)
 
-    def createPineTreehouse(self, color):
-        size = "medium"
-        tree_type = "pine"
-        return Treehouse(size, color, tree_type)
+    def create_oak_treehouse(self, color: str) -> Treehouse:
+        return Treehouse("small", color, "oak")
 
-    def createGlassSkyscraper(self, height):
-        material = "glass"
-        return Skyscraper(height, material)
+    def create_pine_treehouse(self, color: str) -> Treehouse:
+        return Treehouse("medium", color, "pine")
 
-    def createSteelSkyscraper(self, height):
-        material = "steel"
-        return Skyscraper(height, material)
+    def create_glass_skyscraper(self, height: int) -> Skyscraper:
+        return Skyscraper(height, "glass")
+
+    def create_steel_skyscraper(self, height: int) -> Skyscraper:
+        return Skyscraper(height, "steel")
+
 
 # Usage
 def demo():
-    houseFactory = HouseFactory()
-    houseFactory.createSmallHouse("blue").print()
-    houseFactory.createMediumHouse("red").print()
-    houseFactory.createLargeHouse("yellow").print()
-    houseFactory.createOakTreehouse("brown").print()
-    houseFactory.createPineTreehouse("green").print()
-    houseFactory.createGlassSkyscraper(300).print()
-    houseFactory.createSteelSkyscraper(500).print()
+    house_factory = HouseFactory()
+    house_factory.create_small_house("blue").print()
+    house_factory.create_medium_house("red").print()
+    house_factory.create_large_house("yellow").print()
+    house_factory.create_oak_treehouse("brown").print()
+    house_factory.create_pine_treehouse("green").print()
+    house_factory.create_glass_skyscraper(300).print()
+    house_factory.create_steel_skyscraper(500).print()

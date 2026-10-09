@@ -1,68 +1,71 @@
 # Decorator Pattern
 
-class Coffee:
-    def get_description(self):
-        pass
+from abc import ABC, abstractmethod
 
-    def get_cost(self):
-        pass
+
+class Coffee(ABC):
+    @abstractmethod
+    def get_description(self) -> str: ...
+
+    @abstractmethod
+    def get_cost(self) -> float: ...
+
 
 class BasicCoffee(Coffee):
-    def get_description(self):
+    def get_description(self) -> str:
         return "Coffee"
 
-    def get_cost(self):
+    def get_cost(self) -> float:
         return 2.0
 
+
 class CoffeeDecorator(Coffee):
-    def __init__(self, coffee):
+    """Wraps a coffee and has the same interface, so decorators can be stacked."""
+
+    def __init__(self, coffee: Coffee):
         self.coffee = coffee
 
-    def get_description(self):
+    def get_description(self) -> str:
         return self.coffee.get_description()
 
-    def get_cost(self):
+    def get_cost(self) -> float:
         return self.coffee.get_cost()
 
+
 class MilkCoffeeDecorator(CoffeeDecorator):
-    def get_description(self):
+    def get_description(self) -> str:
         return f"{self.coffee.get_description()}, Milk"
 
-    def get_cost(self):
+    def get_cost(self) -> float:
         return self.coffee.get_cost() + 0.5
 
+
 class SugarCoffeeDecorator(CoffeeDecorator):
-    def get_description(self):
+    def get_description(self) -> str:
         return f"{self.coffee.get_description()}, Sugar"
 
-    def get_cost(self):
+    def get_cost(self) -> float:
         return self.coffee.get_cost() + 0.3
 
+
 class SweetFoamCoffeeDecorator(CoffeeDecorator):
-    def get_description(self):
+    def get_description(self) -> str:
         return f"{self.coffee.get_description()}, Sweet Foam"
 
-    def get_cost(self):
+    def get_cost(self) -> float:
         return self.coffee.get_cost() + 0.7
+
 
 # Usage
 def demo():
-    # Create a basic coffee
-    basic_coffee = BasicCoffee()
-    print(basic_coffee.get_description())  # Output: Coffee
-    print(basic_coffee.get_cost())  # Output: 2.0
+    coffee = BasicCoffee()
+    print(f"{coffee.get_description()}: {coffee.get_cost():.2f}")  # Output: Coffee: 2.00
 
-    # Decorate the basic coffee with milk
-    milk_coffee = MilkCoffeeDecorator(basic_coffee)
-    print(milk_coffee.get_description())  # Output: Coffee, Milk
-    print(milk_coffee.get_cost())  # Output: 2.5
+    coffee = MilkCoffeeDecorator(coffee)
+    print(f"{coffee.get_description()}: {coffee.get_cost():.2f}")  # Output: Coffee, Milk: 2.50
 
-    # Decorate the milk coffee with sugar
-    sugar_milk_coffee = SugarCoffeeDecorator(milk_coffee)
-    print(sugar_milk_coffee.get_description())  # Output: Coffee, Milk, Sugar
-    print(sugar_milk_coffee.get_cost())  # Output: 2.8
+    coffee = SugarCoffeeDecorator(coffee)
+    print(f"{coffee.get_description()}: {coffee.get_cost():.2f}")  # Output: Coffee, Milk, Sugar: 2.80
 
-    # Decorate the sugar milk coffee with sweet foam
-    sweet_foam_sugar_milk_coffee = SweetFoamCoffeeDecorator(sugar_milk_coffee)
-    print(sweet_foam_sugar_milk_coffee.get_description())  # Output: Coffee, Milk, Sugar, Sweet Foam
-    print(sweet_foam_sugar_milk_coffee.get_cost())  # Output: 3.5
+    coffee = SweetFoamCoffeeDecorator(coffee)
+    print(f"{coffee.get_description()}: {coffee.get_cost():.2f}")  # Output: Coffee, Milk, Sugar, Sweet Foam: 3.50
