@@ -1,49 +1,70 @@
 # Builder Pattern
 
+
 class House:
-    def __init__(self, size, color):
-        self.size = size
-        self.color = color
+    def __init__(self):
+        self.size = "medium"
+        self.color = "white"
+        self.floors = 1
+        self.garage = False
+        self.pool = False
 
     def print(self):
-        print(f"This {self.size} {self.color} house is amazing!")
+        extras = [name for name, has in (("a garage", self.garage), ("a pool", self.pool)) if has]
+        with_extras = f" with {' and '.join(extras)}" if extras else ""
+        print(f"This {self.size} {self.color} house has {self.floors} floor(s){with_extras}.")
 
 
-class Treehouse(House):
-    def __init__(self, size, color, tree_type):
-        super().__init__(size, color)
-        self.tree_type = tree_type
+class HouseBuilder:
+    """Builds a House step by step; every step returns the builder so calls can be chained."""
 
-    def print(self):
-        print(f"This {self.size} {self.color} treehouse on a {self.tree_type} tree is so cool!")
+    def __init__(self):
+        self.house = House()
+
+    def size(self, size: str) -> "HouseBuilder":
+        self.house.size = size
+        return self
+
+    def color(self, color: str) -> "HouseBuilder":
+        self.house.color = color
+        return self
+
+    def floors(self, floors: int) -> "HouseBuilder":
+        self.house.floors = floors
+        return self
+
+    def with_garage(self) -> "HouseBuilder":
+        self.house.garage = True
+        return self
+
+    def with_pool(self) -> "HouseBuilder":
+        self.house.pool = True
+        return self
+
+    def build(self) -> House:
+        house, self.house = self.house, House()  # reset, so the builder can be reused
+        return house
 
 
-class Skyscraper:
-    def __init__(self, height, material):
-        self.height = height
-        self.material = material
+class Architect:
+    """Optional director: knows recipes for common houses."""
 
-    def print(self):
-        print(f"This {self.height}-meter tall skyscraper made of {self.material}.")
+    def __init__(self, builder: HouseBuilder):
+        self.builder = builder
 
+    def family_house(self) -> House:
+        return self.builder.size("large").floors(2).with_garage().build()
 
-class HouseFactory:
-    def createHouse(self, size, color):
-        return House(size, color)
+    def holiday_villa(self) -> House:
+        return self.builder.color("yellow").with_pool().build()
 
-    def createTreehouse(self, size, color, tree_type):
-        return Treehouse(size, color, tree_type)
-
-    def createSkyscraper(self, height, material):
-        return Skyscraper(height, material)
 
 # Usage
 def demo():
-    houseFactory = HouseFactory()
-    house = houseFactory.createHouse("medium", "blue")
-    treehouse = houseFactory.createTreehouse("small", "green", "oak")
-    skyscraper = houseFactory.createSkyscraper(300, "glass")
+    builder = HouseBuilder()
+    builder.size("small").color("blue").build().print()
+    builder.size("large").color("red").floors(3).with_garage().with_pool().build().print()
 
-    house.print()
-    treehouse.print()
-    skyscraper.print()
+    architect = Architect(builder)
+    architect.family_house().print()
+    architect.holiday_villa().print()
